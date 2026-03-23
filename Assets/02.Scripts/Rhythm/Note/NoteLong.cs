@@ -2,26 +2,43 @@ using UnityEngine;
 
 public class NoteLong : NoteObject
 {
-    public Transform head;
-    public Transform tail;
-    public LineRenderer line;
+    //public bool isHolding = false;
 
-    protected override void SetVisualPosition(float y)
-    {
-        float currentTime = conductor.songPosition;
+    //protected override void SetPosition(float x)
+    //{
+    //    transform.position = new Vector3(x, transform.position.y, 0);
+    //}
 
-        float headY = (note.time - currentTime) * GetSpeed();
-        float tailY = (note.tail - currentTime) * GetSpeed();
+    //protected override void Update()
+    //{
+    //    base.Update();
 
-        head.position = new Vector3(head.position.x, headY, 0);
-        tail.position = new Vector3(tail.position.x, tailY, 0);
+    //    // 유지 판정
+    //    if (isHolding)
+    //    {
+    //        if (conductor.songPosition >= data.tail)
+    //        {
+    //            Debug.Log("Long Success");
+    //            pool.Return(gameObject);
+    //        }
+    //    }
+    //}
 
-        transform.position = head.position;
+    //public override void TryHit()
+    //{
+    //    float diff = Mathf.Abs(data.time - conductor.songPosition);
 
-        Vector3 linePos = tail.position - head.position;
-        linePos.x = 0;
-        linePos.z = 0;
+    //    if (diff <= good)
+    //    {
+    //        isHolding = true;
+    //        Debug.Log("Long Start");
+    //    }
+    //}
 
-        line.SetPosition(1, linePos);
-    }
+    //public void Release()
+    //{
+    //    isHolding = false;
+    //    Debug.Log("Long Failed");
+    //    pool.Return(gameObject);
+    //}
 }

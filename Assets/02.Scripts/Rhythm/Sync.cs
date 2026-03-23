@@ -15,7 +15,7 @@ public class Sync : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        judgement = FindObjectOfType<Judgement>();
+        judgement = FindFirstObjectByType<Judgement>();
         sr = judgeLine.GetComponent<SpriteRenderer>();
         sr.color = sr.color = new Color(1, 1, 1, 0);
     }

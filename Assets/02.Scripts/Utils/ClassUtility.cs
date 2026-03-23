@@ -22,8 +22,8 @@ namespace Utils.ClassUtility
     public class Note
     {
         public NoteType type; // 노트 타입 (0: Short, 1: Long)
-        public float time;    // 노트 시작 시간 (언제 도착할지)
-        public float tail;    // 롱노트 끝
+        public float time;    // 노트 도착 시간
+        public float tail;    // 롱노트 끝 시간
         public int line;      // 레인 index
     }
 

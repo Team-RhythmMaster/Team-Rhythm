@@ -35,10 +35,6 @@ public class UIManager : MonoBehaviour
 
         uiObjectDic["UI_G_Judgement"].action = Score.Instance.Ani;
         uiObjectDic["UI_G_Combo"].action = Score.Instance.Ani;
-
-        //uiObjectDic["UI_E_ProgressBar"].action = Editor.Instance.Progress;
-        //uiObjectDic["UI_E_Play"].action = Editor.Instance.Play;
-        //uiObjectDic["UI_E_Stop"].action = Editor.Instance.Stop;
     }
 
     public UIActor FindUI(string uiName)

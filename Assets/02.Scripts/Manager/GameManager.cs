@@ -12,7 +12,6 @@ public class GameManager : MonoBehaviour
 
     public Dictionary<string, Sheet> sheets = new Dictionary<string, Sheet>();
     public string title;
-    Coroutine coPlaying;
 
     private void Awake()
     {

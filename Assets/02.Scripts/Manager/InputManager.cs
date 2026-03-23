@@ -1,17 +1,21 @@
+using System.Linq;
 using UnityEngine;
-using Utils.GameDefinitions;
 using UnityEngine.InputSystem;
+using Utils.ClassUtility;
+using Utils.GameDefinitions;
 
 public class InputManager : MonoBehaviour
 {
     private static InputManager instance;
     public static InputManager Instance {  get { return instance; } }
 
-    public LayerMask noteLayer;
-
     public GameObject[] keyEffects = new GameObject[4];
-    private Judgement judgement = null;
-    private Sync sync = null;
+    private Conductor conductor;
+    private Judgement judgement;
+    private Sync sync;
+
+    public LayerMask noteLayer;
+    public Vector2 mousePos;
 
     private void Awake()
     {
@@ -25,22 +29,41 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    public Vector2 mousePos;
-
     private void Start()
     {
-        foreach (var effect in keyEffects)
-        {
-            effect.gameObject.SetActive(false);
-        }
-        judgement = FindObjectOfType<Judgement>();
-        sync = FindObjectOfType<Sync>();
+        //foreach (var effect in keyEffects)
+        //{
+        //    effect.gameObject.SetActive(false);
+        //}
+
+        conductor = FindFirstObjectByType<Conductor>();
+        judgement = FindFirstObjectByType<Judgement>();
+        sync = FindFirstObjectByType<Sync>();
     }
 
     private void Update()
     {
-        if (GameManager.Instance.state == GameState.Edit)
-            mousePos = Mouse.current.position.ReadValue();
+        //if (GameManager.Instance.state == GameState.Edit)
+        //    mousePos = Mouse.current.position.ReadValue();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            HitNote();
+        }
+    }
+
+    void HitNote()
+    {
+        NoteObject[] notes = FindObjectsByType<NoteObject>(FindObjectsSortMode.None);
+
+        if (notes.Length == 0) return;
+
+        // 가장 가까운 노트 찾기
+        NoteObject closest = notes
+            .OrderBy(n => Mathf.Abs(n.noteTime - conductor.songTime))
+            .First();
+
+        closest.TryHit();
     }
 
     public void OnNoteLine0(InputAction.CallbackContext context)

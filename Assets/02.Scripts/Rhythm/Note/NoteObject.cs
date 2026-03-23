@@ -1,63 +1,61 @@
 ﻿using UnityEngine;
-using System.Collections;
 using Utils.ClassUtility;
 
 // Note 데이터를 기반으로 렌더링 및 노트의 위치 계산
 public abstract class NoteObject : MonoBehaviour
 {
-    public Note note;
-    protected Conductor conductor;
+    private Conductor conductor;
 
+    public float noteTime;
+    public float speed = 3f;
+
+    private bool isHit = false;
+
+    // 판정 범위
     public float perfect = 0.05f;
     public float good = 0.1f;
     public float miss = 0.2f;
 
-    private bool isHit = false;
-
-    protected virtual void Awake()
+    void Start()
     {
         conductor = FindFirstObjectByType<Conductor>();
     }
 
-    protected virtual void Update()
+    void Update()
     {
-        UpdatePosition();
-        CheckMiss();
+        float currentTime = conductor.songTime;
+        float x = (noteTime - currentTime) * speed;
+
+        transform.position = new Vector3(x, transform.position.y, 0);
+        CheckMiss(currentTime);
     }
 
-    // 시간 기반 위치 계산
-    protected virtual void UpdatePosition()
+    // 자동 Miss 처리
+    void CheckMiss(float currentTime)
     {
-        // 현재 음악 시간
-        float currentTime = conductor.songPosition;
-        float y = (note.time - currentTime) * GetSpeed();
-        SetVisualPosition(y);
+        if (!isHit && currentTime - noteTime > miss)
+        {
+            Debug.Log("Miss");
+            Destroy(gameObject);
+        }
     }
 
-    protected abstract void SetVisualPosition(float y);
-
-    // 초당 이동 거리
-    protected virtual float GetSpeed()
+    // 입력 판정
+    public void TryHit()
     {
-        return 5f;
-    }
+        float currentTime = conductor.songTime;
 
-    public virtual void TryHit()
-    {
-        float currentTime = conductor.songPosition;
-        float diff = Mathf.Abs(note.time - currentTime);
+        float diff = Mathf.Abs(noteTime - currentTime);
 
         if (diff <= perfect)
         {
             Debug.Log("Perfect");
-            isHit = true;
-            Destroy(gameObject);
+            Hit();
         }
         else if (diff <= good)
         {
             Debug.Log("Good");
-            isHit = true;
-            Destroy(gameObject);
+            Hit();
         }
         else
         {
@@ -65,14 +63,9 @@ public abstract class NoteObject : MonoBehaviour
         }
     }
 
-    protected void CheckMiss()
+    void Hit()
     {
-        float currentTime = conductor.songPosition;
-
-        if (!isHit && currentTime - note.time > miss)
-        {
-            Debug.Log("Miss");
-            Destroy(gameObject);
-        }
+        isHit = true;
+        Destroy(gameObject);
     }
 }

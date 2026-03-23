@@ -1,23 +1,18 @@
 using UnityEngine;
 
-// 음악 재샘 및 시간 관리 (모든 판정의 기준)
+// 음악 시간 관리 (DSP 기반)
 public class Conductor : MonoBehaviour
 {
-    public float songPosition; // 현재 재생 위치 (초)
-    public float songPositionInBeats;
-
-    public float bpm = 120f;
-    private float secPerBeat;
+    // 현재 음악의 시간
+    public float songTime;
 
     void Start()
     {
-        secPerBeat = 60f / bpm;
-        AudioManager.Instance.audioSource.Play();
+        AudioManager.Instance.Play();
     }
 
     void Update()
     {
-        songPosition = AudioManager.Instance.audioSource.time;
-        songPositionInBeats = songPosition / secPerBeat;
+        songTime = AudioManager.Instance.audioSource.time;
     }
 }

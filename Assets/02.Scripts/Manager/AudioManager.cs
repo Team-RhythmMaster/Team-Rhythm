@@ -56,24 +56,28 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    // 플레이 시작
     public void Play()
     {
         state = MusicState.Playing;
         audioSource.Play();
     }
 
+    // 일시정지
     public void Pause()
     {
         state = MusicState.Paused;
         audioSource.Pause();
     }
 
+    // 일시정지 해제
     public void UnPause()
     {
         state = MusicState.Unpaused;
         audioSource.UnPause();
     }
 
+    // 종료
     public void Stop()
     {
         state = MusicState.Stop;
