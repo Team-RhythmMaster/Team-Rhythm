@@ -5,8 +5,6 @@ public class InputManager : MonoBehaviour
     private static InputManager instance;
     public static InputManager Instance {  get { return instance; } }
 
-    public GameObject[] keyEffects = new GameObject[4];
-
     private void Awake()
     {
         if(instance != null && instance != this)
@@ -25,15 +23,13 @@ public class InputManager : MonoBehaviour
         HandleLane(1, KeyCode.D);
     }
 
-    void HandleLane(int lane, KeyCode key)
+    private void HandleLane(int _lane, KeyCode _key)
     {
-        if (Input.GetKeyDown(key))
-        {
-            NoteManager.Instance.TryHitLane(lane);
-        }
+        // 키 눌렀을 때 판정 시도
+        if (Input.GetKeyDown(_key))
+            NoteManager.Instance.TryHit(_lane);
 
-        // 롱노트 유지
-        bool isHolding = Input.GetKey(key);
-        NoteManager.Instance.HoldLane(lane, isHolding);
+        // 롱노트 유지 여부 전달
+        NoteManager.Instance.Hold(_lane, Input.GetKey(_key));
     }
 }

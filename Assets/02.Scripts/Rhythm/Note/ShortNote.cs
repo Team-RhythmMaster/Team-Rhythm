@@ -6,31 +6,22 @@ public class ShortNote : NoteObject
     public override void TryHit()
     {
         float currentTime = AudioManager.Instance.songTime + offset;
-        diff = Mathf.Abs(note.time - currentTime);
+        float diff = Mathf.Abs(GetTime() - currentTime);
 
-        if (diff <= perfect)
+        if (diff <= bad)
         {
-            JudgeManager.Instance.Judge("Perfect");
-            Hit();
-        }
-        else if (diff <= great)
-        {
-            JudgeManager.Instance.Judge("Great");
-            Hit();
-        }
-        else if (diff <= good)
-        {
-            JudgeManager.Instance.Judge("Good");
-            Hit();
-        }
-        else if (diff <= bad)
-        {
-            JudgeManager.Instance.Judge("Bad");
-            Hit();
-        }
-        else
-        {
-            JudgeManager.Instance.Judge("Miss");
+            isHit = true;
+
+            if (diff <= perfect) 
+                JudgeManager.Instance.Judge("Perfect");
+            else if (diff <= great) 
+                JudgeManager.Instance.Judge("Great");
+            else if (diff <= good) 
+                JudgeManager.Instance.Judge("Good");
+            else 
+                JudgeManager.Instance.Judge("Bad");
+
+            Remove();
         }
     }
 }

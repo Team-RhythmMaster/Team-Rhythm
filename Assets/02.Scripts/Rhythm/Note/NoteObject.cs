@@ -7,75 +7,68 @@ public abstract class NoteObject : MonoBehaviour
     protected NoteGenerator noteGenerator;
 
     // 기본 데이터
-    public Note note;                // 원본 데이터
-    public float speed;              // 이동 속도
-    protected float offset = -0.03f; // 싱크 보정값
+    private NoteData data;
+    protected float offset = -0.2f; // 싱크 보정값
+    protected float diff = 0.0f;     // longNote 시작점과 끝점 시간 차이
 
     // 판정 범위
-    protected float perfect = 0.1f;
-    protected float great = 0.2f;
-    protected float good = 0.3f;
-    protected float bad = 0.4f;
-    protected float miss = 0.5f;
+    protected const float perfect = 0.05f;
+    protected const float great = 0.15f;
+    protected const float good = 0.2f;
+    protected const float bad = 0.25f;
+    protected const float miss = 0.5f;
 
-    protected float diff = 0.0f;
-
-    // 상태
     protected bool isHit = false;
+    private bool firstFrame = true;
+
+    public int GetLane() => data.lane;
+    public float GetSpeed() => data.speed;
+    public float GetTime() => data.time;
+    public float GetEndTime() => data.endTime;
 
     protected virtual void Awake()
     {
-        noteGenerator = FindFirstObjectByType<NoteGenerator>();
-        speed = noteGenerator.speed;
+
     }
 
     protected virtual void Update()
     {
+        if (firstFrame)
+        {
+            firstFrame = false;
+            return; // 프레임 위치 유지
+        }
+
         float currentTime = AudioManager.Instance.songTime + offset;
-        float x = noteGenerator.hitLine.x + (note.time - currentTime) * speed; // 핵심 공식
-        transform.position = new Vector3(x, NoteManager.Instance.laneY[note.lane], 0);
+        // 핵심 공식 노트 위치 계산 : 노트 위치 = 판정선 + (남은 시간 × 속도)
+        float x = NoteManager.hitLineX + (data.time - currentTime) * data.speed;
+        transform.position = new Vector3(x, NoteManager.Instance.laneY[data.lane], 0);
 
         CheckMiss(currentTime);
     }
 
-    public virtual void Init(float _noteTime, int _lane, float _speed)
+    public void Init(NoteData _data, float _speed, NoteGenerator _generator)
     {
-        note.time = _noteTime;
-        speed = _speed;
-
-        note.lane = _lane;
+        noteGenerator = _generator;
+        data = _data;
+        data.speed = _speed;
         isHit = false;
-
         NoteManager.Instance.Register(this);
     }
 
-    public virtual void Init(Note data, float speed)
-    {
-        note = data;
-        this.speed = speed;
-
-        isHit = false;
-
-        NoteManager.Instance.Register(this);
-    }
-
+    // 판정 시도
     public abstract void TryHit();
 
-    protected virtual void CheckMiss(float currentTime)
+    protected virtual void CheckMiss(float _currentTime)
     {
-        if (!isHit && currentTime - note.time > miss)
+        if (!isHit && _currentTime - data.time > miss)
         {
             JudgeManager.Instance.Judge("Miss");
             Remove();
         }
     }
 
-    protected void Hit()
-    {
-        isHit = true;
-        Remove();
-    }
-
+    // 노트 제거 및 반환
     protected void Remove()
     {
         NoteManager.Instance.Unregister(this);

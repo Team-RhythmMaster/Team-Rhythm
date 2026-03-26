@@ -6,13 +6,13 @@ using System.Collections.Generic;
 namespace Utils.ClassUtility
 {
     [Serializable]
-    public class Note
+    public class NoteData
     {
-        public NoteType type; // 노트 타입 (0: Short, 1: Long)
-        public bool isHold;   // 롱노트 잡고 있는지 여부
-        public float time;    // 노트 도착 시간
-        public float endTime; // 롱노트 끝 시간
-        public int lane;      // 레인 index
+        public bool IsLong => endTime > time; // longNote 여부 확인
+        public int lane;      // 레인 위치
+        public float speed;   // 이동 속도
+        public float time;    // 판정선 도착시간
+        public float endTime; // longNote 끝시간
     }
 
     [Serializable]
@@ -28,7 +28,7 @@ namespace Utils.ClassUtility
         public int[] signature;
 
         // Note
-        public List<Note> notes = new List<Note>();
+        public List<NoteData> notes = new List<NoteData>();
 
 
         public AudioClip clip;

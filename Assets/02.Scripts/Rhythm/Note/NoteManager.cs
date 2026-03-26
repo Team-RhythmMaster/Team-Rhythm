@@ -1,4 +1,5 @@
 using UnityEngine;
+using Utils.ClassUtility;
 using System.Collections.Generic;
 
 public class NoteManager : MonoBehaviour
@@ -6,11 +7,9 @@ public class NoteManager : MonoBehaviour
     private static NoteManager instance;
     public static NoteManager Instance { get { return instance; } }
 
-    // Lane별 큐 (판정용)
-    private Dictionary<int, Queue<NoteObject>> notesByLane = new Dictionary<int, Queue<NoteObject>>();
-    private Dictionary<int, LongNote> activeLongNotes = new Dictionary<int, LongNote>();
+    private Dictionary<int, Queue<NoteObject>> lanes = new();
+    private Dictionary<int, LongNote> activeLong = new();
 
-    // 풀링 (타입별 분리)
     private Queue<ShortNote> shortPool = new Queue<ShortNote>();
     private Queue<LongNote> longPool = new Queue<LongNote>();
 
@@ -20,8 +19,8 @@ public class NoteManager : MonoBehaviour
     public Transform poolParent;
     public int poolSize = 100;
 
-    private Vector3 spawnPos = new Vector3(10.0f, 0.0f, 0.0f);
     public float[] laneY = { 1f, -1f };
+    public const float hitLineX = -6.5f;
 
     private void Awake()
     {
@@ -36,49 +35,57 @@ public class NoteManager : MonoBehaviour
 
         // lane 초기화
         for (int i = 0; i < laneY.Length; i++)
-        {
-            notesByLane[i] = new Queue<NoteObject>();
-        }
+            lanes[i] = new Queue<NoteObject>();
+    }
 
+    private void Start()
+    {
         Init();
     }
 
-    void Init()
+    private void Init()
     {
+        if (shortPrefab == null || longPrefab == null)
+        {
+            Debug.Log("NoteManager: Prefab이 할당되지 않았습니다.");
+            return;
+        }
+
+        if (poolParent == null)
+        {
+            Debug.LogWarning("NoteManager: poolParent가 없어 자동 생성합니다.");
+            GameObject parent = new GameObject("NotePool");
+            poolParent = parent.transform;
+        }
+
         for (int i = 0; i < poolSize; i++)
         {
-            ShortNote s = Instantiate(shortPrefab, poolParent);
+            var s = Instantiate(shortPrefab, poolParent);
             s.gameObject.SetActive(false);
             shortPool.Enqueue(s);
 
-            LongNote l = Instantiate(longPrefab, poolParent);
+            var l = Instantiate(longPrefab, poolParent);
             l.gameObject.SetActive(false);
             longPool.Enqueue(l);
         }
     }
 
-    public ShortNote GetShort()
+    // 풀에서 가져오기
+    public NoteObject Get(NoteData _data)
     {
-        if (shortPool.Count > 0)
-        {
-            var n = shortPool.Dequeue();
-            n.gameObject.SetActive(true);
-            n.transform.position = spawnPos;
-            return n;
-        }
-        return Instantiate(shortPrefab);
-    }
+        NoteObject note;
 
-    public LongNote GetLong()
-    {
-        if (longPool.Count > 0)
+        if (_data.IsLong)
         {
-            var n = longPool.Dequeue();
-            n.gameObject.SetActive(true);
-            n.transform.position = spawnPos;
-            return n;
+            note = longPool.Count > 0 ? longPool.Dequeue() : Instantiate(longPrefab);
         }
-        return Instantiate(longPrefab);
+        else
+        {
+            note = shortPool.Count > 0 ? shortPool.Dequeue() : Instantiate(shortPrefab);
+        }
+
+        note.gameObject.SetActive(true);
+        return note;
     }
 
     // 반환
@@ -86,54 +93,47 @@ public class NoteManager : MonoBehaviour
     {
         _note.gameObject.SetActive(false);
 
-        if (_note is ShortNote s)
-            shortPool.Enqueue(s);
-        else if (_note is LongNote l)
+        if (_note is LongNote l)
             longPool.Enqueue(l);
+        else if (_note is ShortNote s)
+            shortPool.Enqueue(s);
     }
 
-    // 등록 / 제거
+    // Lane 관리
     public void Register(NoteObject _note)
     {
-        notesByLane[_note.note.lane].Enqueue(_note);
+        lanes[_note.GetLane()].Enqueue(_note);
     }
 
     public void Unregister(NoteObject _note)
     {
-        int lane = _note.note.lane;
-
-        if (notesByLane[lane].Count > 0 && notesByLane[lane].Peek() == _note)
-        {
-            notesByLane[lane].Dequeue();
-        }
+        int lane = _note.GetLane();
+        if (lanes[lane].Count > 0 && lanes[lane].Peek() == _note)
+            lanes[lane].Dequeue();
     }
 
-    public void TryHitLane(int _lane)
+    // 입력 처리
+    public void TryHit(int _lane)
     {
-        if (notesByLane[_lane].Count == 0) 
-            return;
-
-        notesByLane[_lane].Peek().TryHit();
+        if (lanes[_lane].Count == 0) return;
+        lanes[_lane].Peek().TryHit();
     }
 
-    public void HoldLane(int lane, bool isHolding)
+    public void Hold(int _lane, bool _holding)
     {
-        if (activeLongNotes.TryGetValue(lane, out LongNote ln))
-        {
-            ln.SetHoldInput(isHolding);
-        }
+        if (activeLong.TryGetValue(_lane, out var ln))
+            ln.SetHold(_holding);
     }
 
-    // 등록
-    public void SetActiveLongNote(int lane, LongNote note)
+    public void SetActiveLongNote(int _lane, LongNote _note)
     {
-        activeLongNotes[lane] = note;
+        activeLong[_lane] = _note;
     }
 
-    // 해제
-    public void ClearActiveLongNote(int lane)
+    public void ClearActiveLongNote(int _lane)
     {
-        if (activeLongNotes.ContainsKey(lane))
-            activeLongNotes.Remove(lane);
+        activeLong.Remove(_lane);
     }
+
+    public float GetLaneY(int _lane) => laneY[_lane];
 }
