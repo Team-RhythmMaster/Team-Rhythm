@@ -1,13 +1,11 @@
 using UnityEngine;
 using Utils.EnumType;
 
-// 일반 노트
 public class ShortNote : NoteObject
 {
     public override void TryHit()
     {
-        float currentTime = AudioManager.Instance.songTime + offset;
-        float diff = Mathf.Abs(GetTime() - currentTime);
+        diff = Mathf.Abs(data.time - currentTime);
 
         if (diff <= JudgeManager.bad)
         {

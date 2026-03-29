@@ -1,14 +1,13 @@
 using UnityEngine;
 using Utils.EnumType;
 
-// 롱 노트
 public class LongNote : NoteObject
 {
     private LineRenderer lineRenderer;
     private GameObject head;
 
-    private bool isHolding = false;
-    private bool isKeyHold = false;
+    private bool isHolding = false;  // 판정을 시작했는지 여부
+    private bool isKeyHold = false;  // 현재 키를 누르고 있는지 여부
 
     private void Awake()
     {
@@ -22,70 +21,64 @@ public class LongNote : NoteObject
     protected override void Update()
     {
         base.Update();
-
-        float currentTime = AudioManager.Instance.songTime + offset;
         UpdateLine(currentTime);
 
         if (!isHolding) 
             return;
 
-        // 누르다 떼면 실패
-        if (!isKeyHold && currentTime < GetEndTime())
+        if (!isKeyHold && currentTime < data.endTime)
         {
+            // 누르다 떼면 실패
             Fail();
-            return;
         }
-        // 끝까지 유지 성공
-        if (currentTime >= GetEndTime())
+        else if (isKeyHold && currentTime >= data.endTime)
         {
+            // 끝까지 유지하면 성공
             Complete();
         }
     }
 
+    // 판정 시작 시점과 끝 시점에 따라 선의 위치를 업데이트 → 롱노트 시각화 표현
     private void UpdateLine(float _currentTime)
     {
-        float startTime = isHolding ? _currentTime : GetTime();
+        float startTime = isHolding ? _currentTime : data.time;
+        float startX = NoteManager.hitLineX + ((startTime - _currentTime) * data.speed);
+        float endX = NoteManager.hitLineX + ((data.endTime - _currentTime) * data.speed);
 
-        float startX = NoteManager.hitLineX + (startTime - _currentTime) * GetSpeed();
-        float endX = NoteManager.hitLineX + (GetEndTime() - _currentTime) * GetSpeed();
-
-        float y = NoteManager.Instance.GetLaneY(GetLane());
-
-        lineRenderer.SetPosition(0, new Vector3(startX, y, 0));
-        lineRenderer.SetPosition(1, new Vector3(endX, y, 0));
-    }
-
-    public void SetHold(bool _holding)
-    {
-        isKeyHold = _holding;
+        lineRenderer.SetPosition(0, new Vector3(startX, yPos, 0));
+        lineRenderer.SetPosition(1, new Vector3(endX, yPos, 0));
     }
 
     public override void TryHit()
     {
-        float currentTime = AudioManager.Instance.songTime + offset;
-        diff = Mathf.Abs(GetTime() - currentTime);
-        head.gameObject.SetActive(false);
+        diff = Mathf.Abs(data.time - currentTime);
 
         if (diff <= JudgeManager.bad)
         {
-            isHolding = true;
             isHit = true;
-
-            NoteManager.Instance.SetActiveLongNote(GetLane(), this);
+            isHolding = true;
+            head.gameObject.SetActive(false);
+            NoteManager.Instance.SetActiveLongNote(data.lane, this);
         }
     }
 
     void Complete()
     {
         JudgeManager.Instance.Judge(JudgeType.Perfect);
-        NoteManager.Instance.ClearActiveLongNote(GetLane());
+        NoteManager.Instance.ClearActiveLongNote(data.lane);
         Remove();
     }
 
     void Fail()
     {
         JudgeManager.Instance.Judge(JudgeType.Miss);
-        NoteManager.Instance.ClearActiveLongNote(GetLane());
+        NoteManager.Instance.ClearActiveLongNote(data.lane);
         Remove();
+    }
+
+    // NoteManager에서 매 프레임마다 현재 누르고 있는 키 상태를 업데이트
+    public void SetHold(bool _holding)
+    {
+        isKeyHold = _holding;
     }
 }

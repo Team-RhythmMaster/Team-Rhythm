@@ -15,41 +15,6 @@ namespace Utils.ClassUtility
         public float endTime; // longNote 끝시간
     }
 
-    [Serializable]
-    public class Sheet
-    {
-        // Description
-        public string title;
-        public string artist;
-
-        // Audio
-        public int bpm;
-        public int offset;
-        public int[] signature;
-
-        // Note
-        public List<NoteData> notes = new List<NoteData>();
-
-
-        public AudioClip clip;
-        public Sprite img;
-
-        public float BarPerSec { get; private set; }
-        public float BeatPerSec { get; private set; }
-
-        public int BarPerMilliSec { get; private set; }
-        public int BeatPerMilliSec { get; private set; }
-
-        public void Init()
-        {
-            BarPerMilliSec = (int)(signature[0] / (bpm / 60f) * 1000);
-            BeatPerMilliSec = BarPerMilliSec / 64;
-
-            BarPerSec = BarPerMilliSec * 0.001f;
-            BeatPerSec = BarPerMilliSec / 64f;
-        }
-    }
-
     // Score 정보
     public struct ScoreData
     {

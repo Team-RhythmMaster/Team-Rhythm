@@ -90,6 +90,7 @@ public class NoteManager : MonoBehaviour
         lanes[_note.GetLane()].Enqueue(_note);
     }
 
+    // Note를 해당 lane의 판정 대기열에서 삭제
     public void Unregister(NoteObject _note)
     {
         int lane = _note.GetLane();
