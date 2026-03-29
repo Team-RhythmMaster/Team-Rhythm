@@ -20,8 +20,8 @@ public class NoteManager : MonoBehaviour
     public Transform poolParent;
     public int poolSize = 100;
 
-    public float[] laneY = { 1f, -1f };
-    public const float hitLineX = -6.5f;
+    public float[] laneY = { 2f, -1f };
+    public const float hitLineX = -5.0f;
 
     private void Awake()
     {

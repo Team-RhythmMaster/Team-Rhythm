@@ -4,7 +4,6 @@ using Utils.EnumType;
 public class LongNote : NoteObject
 {
     private LineRenderer lineRenderer;
-    private GameObject head;
 
     private bool isHolding = false;  // 판정을 시작했는지 여부
     private bool isKeyHold = false;  // 현재 키를 누르고 있는지 여부
@@ -12,8 +11,6 @@ public class LongNote : NoteObject
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
-        head = transform.GetChild(0).gameObject;
-
         lineRenderer.positionCount = 2;
         lineRenderer.useWorldSpace = true;
     }
@@ -57,7 +54,6 @@ public class LongNote : NoteObject
         {
             isHit = true;
             isHolding = true;
-            head.gameObject.SetActive(false);
             NoteManager.Instance.SetActiveLongNote(data.lane, this);
         }
     }
