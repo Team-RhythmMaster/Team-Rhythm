@@ -4,6 +4,11 @@ using Utils.ClassUtility;
 
 public abstract class NoteObject : MonoBehaviour
 {
+    protected SpriteRenderer spriteRenderer;
+    public Sprite[] noteSprites;
+    public Sprite[] noteHitSprites;
+    protected int spriteIndex = 0;
+
     protected NoteData data;
     protected float yPos = 0.0f;       // 노트 y 위치 (lane 위치)
     protected float diff = 0.0f;       // longNote 시작점과 끝점 시간 차이
@@ -14,6 +19,13 @@ public abstract class NoteObject : MonoBehaviour
     private bool isFirstFrame = true;
 
     public int GetLane() => data.lane;
+
+    protected virtual void Start()
+    {
+        spriteIndex = data.IsLong ? 3 : Random.Range(0, noteSprites.Length - 1);
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.sprite = noteSprites[spriteIndex];
+    }
 
     protected virtual void Update()
     {

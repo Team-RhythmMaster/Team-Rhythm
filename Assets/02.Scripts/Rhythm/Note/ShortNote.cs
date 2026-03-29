@@ -1,8 +1,14 @@
 using UnityEngine;
 using Utils.EnumType;
+using System.Collections;
 
 public class ShortNote : NoteObject
 {
+    protected override void Start()
+    {
+        base.Start();
+    }
+
     public override void TryHit()
     {
         diff = Mathf.Abs(data.time - currentTime);
@@ -20,7 +26,14 @@ public class ShortNote : NoteObject
             else 
                 JudgeManager.Instance.Judge(JudgeType.Bad);
 
-            Remove();
+            StartCoroutine(OnHit());
         }
+    }
+
+    private IEnumerator OnHit()
+    {
+        spriteRenderer.sprite = noteHitSprites[spriteIndex];
+        yield return new WaitForSeconds(0.1f);
+        Remove();
     }
 }

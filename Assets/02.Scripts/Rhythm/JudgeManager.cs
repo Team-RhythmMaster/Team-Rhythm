@@ -8,10 +8,17 @@ public class JudgeManager : MonoBehaviour
 
     // 판정 범위
     public const float perfect = 0.05f;
-    public const float great = 0.15f;
-    public const float good = 0.2f;
-    public const float bad = 0.25f;
-    public const float miss = 0.5f;
+    public const float great = 0.1f;
+    public const float good = 0.15f;
+    public const float bad = 0.2f;
+    public const float miss = 0.25f;
+
+    // 판정별 점수
+    public const int perfectScore = 1000;
+    public const int greatScore = 500;
+    public const int goodScore = 250;
+    public const int badScore = 100;
+    public const int missScore = 0;
 
     public int combo = 0;
     public int score = 0;
@@ -35,26 +42,22 @@ public class JudgeManager : MonoBehaviour
         {
             case JudgeType.Perfect:
                 combo++;
-                score += 1000;
+                score += perfectScore;
                 break;
-
             case JudgeType.Great:
                 combo++;
-                score += 500;
+                score += greatScore;
                 break;
-
             case JudgeType.Good:
                 combo++;
-                score += 200;
+                score += goodScore;
                 break;
-
             case JudgeType.Bad:
                 combo = 0;
-                score += 100;
+                score += badScore;
                 break;
-
             case JudgeType.Miss:
-                combo = 0;
+                combo = missScore;
                 break;
         }
 

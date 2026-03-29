@@ -1,5 +1,15 @@
 namespace Utils.EnumType
 {
+    // 게임씬 타입
+    public enum SceneType
+    {
+        Intro,
+        Title,
+        Main,
+        Rhythm,
+        Nurture
+    }
+
     // 게임 현재 상태
     public enum GameState
     {

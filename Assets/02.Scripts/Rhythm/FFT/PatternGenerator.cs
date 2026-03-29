@@ -14,6 +14,7 @@ public class PatternGenerator : MonoBehaviour
 
     private float noteSpawnDelay = 6f;  // Note 셍성 딜레이 시간
     private float longNoteRate = 0.2f;  // longNote 생성 비율
+    private float minInterval = 1.5f;   // 같은 레인에서 노트 간 최소 간격 (초 단위)
 
     private void Awake()
     {
@@ -44,7 +45,7 @@ public class PatternGenerator : MonoBehaviour
         float time = beatAnalyzer.Quantize(_rawTime) + noteSpawnDelay;
 
         // 같은 레인에서 이전 노트 이후 최소 0.5비트 이상 간격이 있어야만 새 노트를 생성 (8분음표)
-        if (time - lastLaneTime[lane] < beatAnalyzer.GetBeatInterval() * 0.5f)
+        if (time - lastLaneTime[lane] < beatAnalyzer.GetBeatInterval() * minInterval)
             return;
 
         NoteData note = new NoteData();

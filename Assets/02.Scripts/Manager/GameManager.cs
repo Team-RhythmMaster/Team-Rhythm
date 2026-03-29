@@ -1,14 +1,17 @@
 using UnityEngine;
 using Utils.EnumType;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     private static GameManager instance;
     public static GameManager Instance {  get { return instance; } }
 
-    private NoteGenerator noteGenerator;
+    public SceneType sceneType = SceneType.Intro;
     public GameState state = GameState.Game;
+
+    private NoteGenerator noteGenerator;
 
     private void Awake()
     {
@@ -33,11 +36,41 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.Play();
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // √ ±‚»≠
     private void Init()
     {
         Application.targetFrameRate = 65;
         Screen.SetResolution(1920, 1080, true);
-
         noteGenerator = FindAnyObjectByType<NoteGenerator>();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "01.TitleScene")
+        {
+            sceneType = SceneType.Title;
+        }
+        else if (scene.name == "02.MainScene")
+        {
+            sceneType = SceneType.Main;
+        }
+        else if (scene.name == "03.RhythmScene")
+        {
+            sceneType = SceneType.Rhythm;
+        }
+        else if (scene.name == "04.NurtureScene")
+        {
+            sceneType = SceneType.Nurture;
+        }
     }
 }

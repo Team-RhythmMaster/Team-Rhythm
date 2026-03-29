@@ -4,12 +4,14 @@ using Utils.EnumType;
 public class LongNote : NoteObject
 {
     private LineRenderer lineRenderer;
+    private JudgeType judge;
 
     private bool isHolding = false;  // 판정을 시작했는지 여부
     private bool isKeyHold = false;  // 현재 키를 누르고 있는지 여부
 
-    private void Awake()
+    protected override void Start()
     {
+        base.Start();
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = 2;
         lineRenderer.useWorldSpace = true;
@@ -54,13 +56,24 @@ public class LongNote : NoteObject
         {
             isHit = true;
             isHolding = true;
+            spriteRenderer.color = new Color(1, 1, 1, 0.0f);
+            spriteRenderer.sprite = noteHitSprites[spriteIndex];
             NoteManager.Instance.SetActiveLongNote(data.lane, this);
+
+            if (diff <= JudgeManager.perfect)
+                judge = JudgeType.Perfect;
+            else if (diff <= JudgeManager.great)
+                judge = JudgeType.Great;
+            else if (diff <= JudgeManager.good)
+                judge = JudgeType.Good;
+            else
+                judge = JudgeType.Bad;
         }
     }
 
     void Complete()
     {
-        JudgeManager.Instance.Judge(JudgeType.Perfect);
+        JudgeManager.Instance.Judge(judge);
         NoteManager.Instance.ClearActiveLongNote(data.lane);
         Remove();
     }

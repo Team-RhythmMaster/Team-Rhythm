@@ -1,4 +1,5 @@
 using UnityEngine;
+using Utils.EnumType;
 
 public class InputManager : MonoBehaviour
 {
@@ -14,13 +15,17 @@ public class InputManager : MonoBehaviour
         else
         {
             instance = this;
+            DontDestroyOnLoad(gameObject);
         }
     }
 
     private void Update()
     {
-        HandleLane(0, KeyCode.A);
-        HandleLane(1, KeyCode.D);
+        if (GameManager.Instance.sceneType == SceneType.Rhythm)
+        {
+            HandleLane(0, KeyCode.F);
+            HandleLane(1, KeyCode.J);
+        }
     }
 
     private void HandleLane(int _lane, KeyCode _key)

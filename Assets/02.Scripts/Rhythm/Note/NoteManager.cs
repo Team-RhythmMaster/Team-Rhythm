@@ -21,7 +21,7 @@ public class NoteManager : MonoBehaviour
     public int poolSize = 100;
 
     public float[] laneY = { 2f, -1f };
-    public const float hitLineX = -5.0f;
+    public const float hitLineX = -4.5f;
 
     private void Awake()
     {
