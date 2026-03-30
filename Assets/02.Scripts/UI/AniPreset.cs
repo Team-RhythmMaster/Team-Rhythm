@@ -5,17 +5,20 @@ using System.Collections.Generic;
 public class AniPreset : MonoBehaviour
 {
     private static AniPreset instance;
-    public static AniPreset Instance
-    {
-        get { return instance; }
-    }
+    public static AniPreset Instance { get { return instance; } }
 
     private Dictionary<string, bool> signalDic = new Dictionary<string, bool>();
 
     private void Awake()
     {
-        if (instance == null)
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
             instance = this;
+        }
     }
 
     public void Join(string uiName)

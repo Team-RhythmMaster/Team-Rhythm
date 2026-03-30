@@ -238,8 +238,10 @@ GameObject:
   - component: {fileID: 183817475}
   - component: {fileID: 183817474}
   - component: {fileID: 183817473}
+  - component: {fileID: 183817477}
   - component: {fileID: 183817472}
   - component: {fileID: 183817471}
+  - component: {fileID: 183817476}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -381,6 +383,45 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &183817476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 183817470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c82753c730f352b47954179176edba76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!50 &183817477
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 183817470}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!1 &193558283
 GameObject:
   m_ObjectHideFlags: 0
@@ -892,8 +933,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86c0b882920bd7b4299e32098b48919c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  combo: 0
-  score: 0
 --- !u!4 &629382516
 Transform:
   m_ObjectHideFlags: 0
@@ -1012,7 +1051,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 6157909132694481830, guid: 973f403e853fe7c4a8947e0189ebaca5, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 98e254405a84c4145bd85894888a4259, type: 3}
+  m_Resource: {fileID: 8300000, guid: 3a41c2270f87f284da817947d99c2676, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -1279,6 +1318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba84cc2b02e053e45bd3a11619c12e01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneType: 0
   state: 0
 --- !u!4 &1069987302
 Transform:
@@ -1456,6 +1496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a22195123c25694e843e2cbb1436c45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitLines: []
 --- !u!4 &1206334406
 Transform:
   m_ObjectHideFlags: 0

@@ -6,8 +6,8 @@ public class AudioManager : MonoBehaviour
     private static AudioManager instance;
     public static AudioManager Instance { get { return instance; } }
 
-    public MusicState state = MusicState.Stop;
     public AudioSource audioSource;
+    public MusicState state = MusicState.Stop;
 
     private double dspStartTime; // 오디오가 실제로 재생되기 시작한 절대 시간
 

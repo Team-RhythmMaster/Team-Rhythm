@@ -1,14 +1,15 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIText : MonoBehaviour
 {
-    private TextMeshProUGUI text;
+    private Text text;
     public UIObject uiObject;
 
     private void Start()
     {
-        text = GetComponent<TextMeshProUGUI>();
+        text = GetComponent<Text>();
     }
 
     public void SetText(string _text)

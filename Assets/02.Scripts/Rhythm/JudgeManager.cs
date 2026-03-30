@@ -1,10 +1,21 @@
+using System;
 using UnityEngine;
+using Utils.ClassUtility;
 using Utils.EnumType;
 
 public class JudgeManager : MonoBehaviour
 {
     private static JudgeManager instance;
     public static JudgeManager Instance { get { return instance; } }
+
+    private UIText uiJudgement;
+    private UIText uiCombo;
+    private UIText uiScore;
+
+    // 점수 데이터
+    public ScoreData data;
+    private int combo = 0;
+    private int score = 0;
 
     // 판정 범위
     public const float perfect = 0.05f;
@@ -20,9 +31,6 @@ public class JudgeManager : MonoBehaviour
     public const int badScore = 100;
     public const int missScore = 0;
 
-    public int combo = 0;
-    public int score = 0;
-
     private void Awake()
     {
         if(instance != null && instance != this)
@@ -33,6 +41,14 @@ public class JudgeManager : MonoBehaviour
         {
             instance = this;
         }
+    }
+
+    // 초기화
+    public void Init()
+    {
+        AniPreset.Instance.Join(uiJudgement.uiObject.Name);
+        AniPreset.Instance.Join(uiCombo.uiObject.Name);
+        AniPreset.Instance.Join(uiScore.uiObject.Name);
     }
 
     // 판정 결과 처리
@@ -62,5 +78,26 @@ public class JudgeManager : MonoBehaviour
         }
 
         UIManager.Instance.ShowJudge(_result);
+    }
+
+    public void Clear()
+    {
+        data = new ScoreData();
+        data.judgeText = Enum.GetNames(typeof(JudgeType));
+        data.judgeColor = new Color[3] { Color.blue, Color.yellow, Color.red };
+        uiJudgement.SetText("");
+        uiCombo.SetText("");
+        uiScore.SetText("0");
+    }
+
+    public void SetScore()
+    {
+        uiJudgement.SetText(data.judgeText[(int)data.judge]);
+        uiJudgement.SetColor(data.judgeColor[(int)data.judge]);
+        uiCombo.SetText($"{data.combo}");
+        uiScore.SetText($"{data.score}");
+
+        AniPreset.Instance.PlayPop(uiJudgement.uiObject.Name, uiJudgement.uiObject.rect);
+        AniPreset.Instance.PlayPop(uiCombo.uiObject.Name, uiCombo.uiObject.rect);
     }
 }

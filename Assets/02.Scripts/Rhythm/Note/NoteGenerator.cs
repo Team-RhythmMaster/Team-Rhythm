@@ -9,7 +9,7 @@ public class NoteGenerator : MonoBehaviour
     public List<NoteData> notes = new List<NoteData>();
 
     public float speed { get { return noteSpeed; } }
-    private float noteSpeed = 2.5f;
+    private float noteSpeed = 3.5f;
 
     private float spawnAheadTime; // 노트가 판정선까지 이동하는 데 걸리는 시간
     private int spawnIndex = 0;   // 다음에 생성할 노트 인덱스

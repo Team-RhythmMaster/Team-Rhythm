@@ -1,10 +1,13 @@
 using UnityEngine;
+using System.Linq;
 using Utils.EnumType;
 
 public class InputManager : MonoBehaviour
 {
     private static InputManager instance;
     public static InputManager Instance {  get { return instance; } }
+
+    private Transform[] hitLines;
 
     private void Awake()
     {
@@ -17,18 +20,25 @@ public class InputManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
+
+        Init();
+    }
+
+    private void Init()
+    {
+        hitLines = GameObject.Find("HitLine").GetComponentsInChildren<Transform>().Skip(1).ToArray();
     }
 
     private void Update()
     {
         if (GameManager.Instance.sceneType == SceneType.Rhythm)
         {
-            HandleLane(0, KeyCode.F);
-            HandleLane(1, KeyCode.J);
+            CheckInput(0, KeyCode.F);
+            CheckInput(1, KeyCode.J);
         }
     }
 
-    private void HandleLane(int _lane, KeyCode _key)
+    private void CheckInput(int _lane, KeyCode _key)
     {
         // 키 눌렀을 때 판정 시도
         if (Input.GetKeyDown(_key))
@@ -36,5 +46,6 @@ public class InputManager : MonoBehaviour
 
         // 롱노트 유지 여부 전달
         NoteManager.Instance.Hold(_lane, Input.GetKey(_key));
+        hitLines[_lane].gameObject.SetActive(false);
     }
 }

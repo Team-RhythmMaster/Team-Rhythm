@@ -28,6 +28,7 @@ namespace Utils.ClassUtility
         public Color[] judgeColor;
         public JudgeType judge;
         public int combo;
+
         public int score
         {
             get
