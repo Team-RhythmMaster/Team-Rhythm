@@ -20,11 +20,9 @@ public abstract class NoteObject : MonoBehaviour
 
     public int GetLane() => data.lane;
 
-    protected virtual void Start()
+    protected virtual void Awake()
     {
-        spriteIndex = data.IsLong ? 3 : Random.Range(0, noteSprites.Length - 1);
         spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.sprite = noteSprites[spriteIndex];
     }
 
     protected virtual void Update()
@@ -51,6 +49,10 @@ public abstract class NoteObject : MonoBehaviour
         data = _data;
         data.speed = _speed;
         yPos = NoteManager.Instance.laneY[data.lane];
+
+        spriteIndex = data.IsLong ? 3 : Random.Range(0, noteSprites.Length - 1);
+        spriteRenderer.sprite = noteSprites[spriteIndex];
+
         NoteManager.Instance.Register(this);
     }
 

@@ -4,6 +4,7 @@ using Utils.EnumType;
 
 namespace Utils.ClassUtility
 {
+    // Note 정보
     [Serializable]
     public class NoteData
     {
@@ -15,7 +16,8 @@ namespace Utils.ClassUtility
     }
 
     // Score 정보
-    public struct ScoreData
+    [Serializable]
+    public class ScoreData
     {
         public string[] judgeText;
         public Color[] judgeColor;

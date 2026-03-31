@@ -36,11 +36,11 @@ public class NoteGenerator : MonoBehaviour
     public void Init()
     {
         rightEdge = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, 0)).x;
-        spawnX = rightEdge + 2.0f;
+        spawnX = rightEdge + 15.0f;
 
         // 거리 / 속도 = 시간 (+1.0f → 여유 시간/렉 방지/프레임 드랍 방지)
         spawnAheadTime = ((spawnX - NoteManager.hitLineX) / speed) + 1.0f;
-        float currentTime = AudioManager.Instance.songTime;
+        double currentTime = AudioManager.Instance.songTime;
 
         // 초기 생성 → 게임 시작 시 이미 보여야 할 노트들 미리 생성
         while (spawnIndex < notes.Count)

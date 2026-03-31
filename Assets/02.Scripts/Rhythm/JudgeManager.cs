@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using Utils.EnumType;
 using Utils.ClassUtility;
 using System.Collections.Generic;
@@ -13,24 +14,27 @@ public class JudgeManager : MonoBehaviour
     private Transform parentTransform;
     private Queue<JudgmentUI> judgePool = new Queue<JudgmentUI>();
 
+    private Text scoreText;
+    // lane별 판정 UI 생성 위치
+    private Vector2[] lanePositions = { new Vector2(-480.0f, 290.0f), new Vector2(-480.0f, -35.0f) };
+
     // 점수 데이터
     public ScoreData data;
-    private int combo = 0;
-    private int score = 0;
+    public int combo = 0;
+    public int score = 0;
 
     // 판정 범위
-    public const float perfect = 0.1f;
-    public const float great = 0.15f;
-    public const float good = 0.2f;
-    public const float bad = 0.25f;
-    public const float miss = 0.3f;
+    public const float perfect = 0.05f;
+    public const float great = 0.1f;
+    public const float good = 0.15f;
+    public const float bad = 0.2f;
+    public const float miss = 0.25f;
 
     // 판정별 점수
     private const int perfectScore = 1000;
     private const int greatScore = 500;
     private const int goodScore = 250;
     private const int badScore = 100;
-    private const int missScore = 0;
 
     private void Awake()
     {
@@ -48,7 +52,8 @@ public class JudgeManager : MonoBehaviour
 
     private void Init()
     {
-        parentTransform = GameObject.Find("Canvas/JudgePool").transform;
+        parentTransform = GameObject.Find("JudgePool").transform;
+        scoreText = GameObject.Find("ScoreText").GetComponentInChildren<Text>();
     }
 
     public JudgmentUI JudgmentUIGet()
@@ -91,10 +96,17 @@ public class JudgeManager : MonoBehaviour
                 score += badScore;
                 break;
             case JudgeType.Miss:
-                combo = missScore;
+                combo = 0;
                 break;
         }
 
-        UIManager.Instance.ShowJudge(_result, _note.GetLane());
+        FeedbackSystem.Instance.PlayFeedback(_result, _note.GetLane());
+    }
+
+    // 판정 UI 생성 및 콤보 UI 업데이트
+    public void ShowJudge(JudgeType _data, int _lane, int _score)
+    {
+        JudgmentUIGet().Play(_data, lanePositions[_lane]);
+        scoreText.text = _score.ToString();
     }
 }

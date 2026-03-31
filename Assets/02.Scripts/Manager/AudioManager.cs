@@ -9,46 +9,20 @@ public class AudioManager : MonoBehaviour
     public AudioSource audioSource;
     public MusicState state = MusicState.Stop;
 
-    private double dspStartTime; // 오디오가 실제로 재생되기 시작한 절대 시간
+    public float noteTravelTime = 2.0f;
+    public double songStartDspTime;// 오디오가 실제로 재생되기 시작한 절대 시간
 
     public float songTime
     {
         get
         {
-            double time = AudioSettings.dspTime - dspStartTime;
-
-            if (time < 0)
-                return 0f;
-
-            return (float)time;
+            return (float)(AudioSettings.dspTime - songStartDspTime);
         }
     }
 
-    public float Length
+    public bool IsSongFinished()
     {
-        get
-        {
-            float len = 0f;
-            if (audioSource.clip != null)
-                len = audioSource.clip.length;
-            return len;
-        }
-    }
-
-    public float progressTime
-    {
-        get
-        {
-            float time = 0f;
-            if (audioSource.clip != null)
-                time = audioSource.time;
-            return time;
-        }
-        set
-        {
-            if (audioSource.clip != null)
-                audioSource.time = value;
-        }
+        return songTime >= audioSource.clip.length;
     }
 
     private void Awake()
@@ -75,8 +49,8 @@ public class AudioManager : MonoBehaviour
     public void Play()
     {
         state = MusicState.Playing;
-        dspStartTime = AudioSettings.dspTime;
-        audioSource.PlayScheduled(dspStartTime);
+        songStartDspTime = AudioSettings.dspTime + noteTravelTime;
+        audioSource.PlayScheduled(songStartDspTime);
     }
 
     // 일시정지

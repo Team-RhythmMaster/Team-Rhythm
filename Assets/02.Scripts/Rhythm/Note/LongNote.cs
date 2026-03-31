@@ -9,9 +9,9 @@ public class LongNote : NoteObject
     private bool isHolding = false;  // 판정을 시작했는지 여부
     private bool isKeyHold = false;  // 현재 키를 누르고 있는지 여부
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = 2;
         lineRenderer.useWorldSpace = true;

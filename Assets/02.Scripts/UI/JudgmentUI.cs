@@ -10,11 +10,6 @@ public class JudgmentUI : MonoBehaviour
     private RectTransform rect;
     private Text judgeText;
 
-    private float moveDistance = 100f;
-    private float moveDuration = 0.3f;
-    private float stayDuration = 0.4f;
-    private float fadeDuration = 0.4f;
-
     private void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();
